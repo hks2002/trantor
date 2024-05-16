@@ -6,6 +6,38 @@ macro(get_compiler_id)
   endif()
 endmacro()
 
+macro(get_download_url org_name lib_name)
+  if(${lib_name}_VER)
+    set(${lib_name}_DOWNLOAD_URL "https://github.com/${org_name}/${lib_name}/archive/refs/tags/${lib_name_VER}.zip")
+  else()
+    execute_process(
+      COMMAND curl -sL https://api.github.com/repos/${org_name}/${lib_name}/releases/latest OUTPUT_VARIABLE latest_json
+    )
+    string(
+      REGEX MATCH
+            "\"tag_name\": \"[a-zA-Z]*-*[0-9]+[\\.|-|_][0-9]+[\\.|-|_][0-9]+"
+            latest_tag
+            "${latest_json}"
+    )
+
+    if(${latest_tag} STREQUAL "")
+      message(FATAL_ERROR "REGEX Got empty tag")
+    else()
+      message(STATUS "Latest tag: ${latest_tag}")
+      message(STATUS "Passing ${lib_name}_VER to change version")
+    endif()
+
+    string(
+      SUBSTRING "${latest_tag}"
+                13
+                -1
+                latest_tag_val
+    )
+
+    set(${lib_name}_DOWNLOAD_URL "https://github.com/${org_name}/${lib_name}/archive/refs/tags/${latest_tag_val}.zip")
+  endif()
+endmacro()
+
 # if set toolchain file, don't build, and add include path and link path
 if(CMAKE_TOOLCHAIN_FILE)
   set(BUILD_DEPENDENCIES
@@ -47,7 +79,8 @@ if(BUILD_DEPENDENCIES)
     # googletest_SOURCE_DIR: build/_deps/googletest-src
     # gtest_SOURCE_DIR: build/_deps/googletest-src/googletest
     #]]
-    FetchContent_Declare(googletest URL "https://github.com/google/googletest/archive/refs/tags/v1.14.0.tar.gz")
+    get_download_url("google" "googletest")
+    FetchContent_Declare(googletest URL ${googletest_DOWNLOAD_URL})
     # For Windows: Prevent overriding the parent project's compiler/linker ⚠️MT/MD⚠️ settings
     set(gtest_force_shared_crt
         ON
@@ -64,8 +97,10 @@ if(BUILD_DEPENDENCIES)
 
   # spdlog
   if(TRANTOR_USE_SPDLOG)
-    FetchContent_Declare(fmt URL "https://github.com/fmtlib/fmt/archive/refs/heads/master.zip")
-    FetchContent_Declare(spdlog URL "https://github.com/gabime/spdlog/archive/refs/heads/v1.x.zip")
+    get_download_url("gabime" "spdlog")
+    get_download_url("fmtlib" "fmt")
+    FetchContent_Declare(spdlog URL ${spdlog_DOWNLOAD_URL})
+    FetchContent_Declare(fmt URL ${fmt_DOWNLOAD_URL})
     FetchContent_MakeAvailable(fmt spdlog)
 
     # Set build output path, this is mainly for Windows, to solve the test/unittests running 0x000135 problems
@@ -75,7 +110,8 @@ if(BUILD_DEPENDENCIES)
 
   # c-ares
   if(TRANTOR_USE_C-ARES)
-    FetchContent_Declare(c-ares URL "https://github.com/c-ares/c-ares/archive/refs/heads/main.zip")
+    get_download_url("c-ares" "c-ares")
+    FetchContent_Declare(c-ares URL ${c-ares_DOWNLOAD_URL})
     FetchContent_MakeAvailable(c-ares)
 
     # Set build output path, this is mainly for Windows, to solve the test/unittests running 0x000135 problems
@@ -87,7 +123,8 @@ if(BUILD_DEPENDENCIES)
     # openssl build need perl
     find_package(Perl REQUIRED)
 
-    FetchContent_Declare(OpenSSL URL "https://github.com/openssl/openssl/archive/refs/heads/master.zip")
+    get_download_url("openssl" "openssl")
+    FetchContent_Declare(openssl URL ${openssl_DOWNLOAD_URL})
     FetchContent_MakeAvailable(OpenSSL)
 
     # Set OPENSSL_ROOT_DIR, to let find_package could search from the build directory
@@ -130,7 +167,8 @@ if(BUILD_DEPENDENCIES)
     # botan build need python
     find_package(PythonInterp REQUIRED)
 
-    FetchContent_Declare(Botan URL "https://github.com/randombit/botan/archive/refs/heads/master.zip")
+    get_download_url("randombit" "botan")
+    FetchContent_Declare(botan URL ${botan_DOWNLOAD_URL})
     FetchContent_MakeAvailable(Botan)
 
     set(BOTAN_ROOT_DIR
