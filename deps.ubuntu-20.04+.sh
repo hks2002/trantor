@@ -4,4 +4,4 @@
 
 # Installing packages might fail as the github image becomes outdated
 sudo apt update
-sudo apt install libgtest-dev libspdlog-dev libfmt-dev libc-ares-dev openssl libssl-dev -y
+sudo apt install curl libgtest-dev libspdlog-dev libc-ares-dev openssl libssl-dev -y

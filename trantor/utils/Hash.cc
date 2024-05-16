@@ -14,6 +14,7 @@
 
 #include "Hash.h"
 
+#include <cassert>
 #if defined(USE_OPENSSL)
 #if OPENSSL_VERSION_MAJOR < 3  // openssl version < 3 using low level API
 #include <crypto/blake2/blake2_local.h>
@@ -45,8 +46,6 @@ namespace utils {
  * @param len length of the data
  *
  * @return the MD5 hash as a Hash128 object
- *
- * @throws None
  */
 Hash128 md5(const void *data, size_t len) {
   Hash128 hash;
@@ -66,11 +65,9 @@ Hash128 md5(const void *data, size_t len) {
   EVP_MD_free(md5);
 #endif
 #elif defined(USE_BOTAN)
-  Hash128 md5(const void *data, size_t len) {
-    auto md5 = Botan::HashFunction::create("MD5");
-    md5->update((const unsigned char *)data, len);
-    md5->final((unsigned char *)&hash);
-  }
+  auto md5 = Botan::HashFunction::create("MD5");
+  md5->update((const unsigned char *)data, len);
+  md5->final((unsigned char *)&hash);
 #else
   MD5_CTX ctx;
   trantor_md5_init(&ctx);
@@ -88,8 +85,6 @@ Hash128 md5(const void *data, size_t len) {
  * @param len the length of the data in bytes
  *
  * @return the SHA1 hash of the data
- *
- * @throws None
  */
 Hash160 sha1(const void *data, size_t len) {
   Hash160 hash;
@@ -247,8 +242,6 @@ Hash256 blake2b(const void *data, size_t len) {
  * @param len length of the data buffer
  *
  * @return a string containing the hexadecimal representation of the data
- *
- * @throws None
  */
 std::string toHexString(const void *data, size_t len) {
   std::string str;
@@ -262,5 +255,4 @@ std::string toHexString(const void *data, size_t len) {
 }
 
 }  // namespace utils
-
 }  // namespace trantor

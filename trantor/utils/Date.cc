@@ -14,21 +14,26 @@
 
 #include "Date.h"
 
-#include "StringFunctions.h"
+#include "StringUtils.h"
 
 #ifndef _WIN32
 #include <sys/time.h>
 #else
+#include <corecrt.h>
 #include <time.h>
 #include <winsock2.h>
 #endif
 
-#include <cstdlib>
-#include <iostream>
+#include <cstdint>
+#include <cstring>
+#include <stdio.h>
 #include <string>
 #include <string_view>
+#include <utility>
+#include <vector>
 
 namespace trantor {
+
 /**
  * @brief define microseconds per second
  *
@@ -68,15 +73,72 @@ Date::Date(unsigned int year,
   struct tm tm;
   memset(&tm, 0, sizeof(tm));
   tm.tm_isdst = -1;
+  tm.tm_year  = year - 1900;
+  tm.tm_mon   = month - 1;
+  tm.tm_mday  = day;
+  tm.tm_hour  = hour;
+  tm.tm_min   = minute;
+  tm.tm_sec   = second;
+
   time_t epoch;
-  tm.tm_year              = year - 1900;
-  tm.tm_mon               = month - 1;
-  tm.tm_mday              = day;
-  tm.tm_hour              = hour;
-  tm.tm_min               = minute;
-  tm.tm_sec               = second;
-  epoch                   = mktime(&tm);
+  epoch = mktime(&tm);
+
   microSecondsSinceEpoch_ = static_cast<int64_t>(epoch) * MICRO_SECONDS_PRE_SEC + microSecond;
+}
+
+/**
+ * @brief From DB string to trantor UTC time.
+ *
+ * Inverse of toDbString()
+ */
+Date Date::fromDbString(std::string_view datetime) {
+  return fromDbStringLocal(datetime).after(static_cast<double>(timezoneOffset()));
+}
+
+/**
+ * @brief From DB string to trantor local time zone.
+ *
+ * Inverse of toDbStringLocal()
+ */
+Date Date::fromDbStringLocal(std::string_view datetime) {
+  unsigned int year = {0}, month = {0}, day = {0}, hour = {0}, minute = {0}, second = {0}, microSecond = {0};
+  std::vector<std::string> &&v = trantor::utils::splitString(std::string(datetime), std::string(" "));
+  if (2 == v.size()) {
+    // date
+    std::vector<std::string> date = trantor::utils::splitString(v[0], "-");
+    if (3 == date.size()) {
+      year  = std::stol(date[0]);
+      month = std::stol(date[1]);
+      day   = std::stol(date[2]);
+      // time
+      std::vector<std::string> time = trantor::utils::splitString(v[1], ":");
+      if (2 < time.size()) {
+        hour         = std::stol(time[0]);
+        minute       = std::stol(time[1]);
+        auto seconds = trantor::utils::splitString(time[2], ".");
+        second       = std::stol(seconds[0]);
+        if (1 < seconds.size()) {
+          if (seconds[1].length() > 6) {
+            seconds[1].resize(6);
+          } else if (seconds[1].length() < 6) {
+            seconds[1].append(6 - seconds[1].length(), '0');
+          }
+          microSecond = std::stol(seconds[1]);
+        }
+      }
+    }
+  }
+  return Date(year, month, day, hour, minute, second, microSecond);
+}
+
+/**
+ * @brief Returns the timezone offset for the Date.
+ *
+ * @return the timezone offset
+ */
+int64_t Date::timezoneOffset() {
+  static int64_t offset = -(Date(1970, 1, 3).secondsSinceEpoch() - 2LL * 3600LL * 24LL);
+  return offset;
 }
 
 /**
@@ -202,61 +264,6 @@ bool Date::isSameSecond(Date &&date) const {
  */
 void Date::swap(Date &that) {
   std::swap(microSecondsSinceEpoch_, that.microSecondsSinceEpoch_);
-}
-
-/**
- * @brief Returns the timezone offset for the Date.
- *
- * @return the timezone offset
- */
-int64_t Date::timezoneOffset() {
-  static int64_t offset = -(Date(1970, 1, 3).secondsSinceEpoch() - 2LL * 3600LL * 24LL);
-  return offset;
-}
-
-/**
- * @brief From DB string to trantor UTC time.
- *
- * Inverse of toDbString()
- */
-Date Date::fromDbString(std::string_view datetime) {
-  return fromDbStringLocal(datetime).after(static_cast<double>(timezoneOffset()));
-}
-
-/**
- * @brief From DB string to trantor local time zone.
- *
- * Inverse of toDbStringLocal()
- */
-Date Date::fromDbStringLocal(std::string_view datetime) {
-  unsigned int year = {0}, month = {0}, day = {0}, hour = {0}, minute = {0}, second = {0}, microSecond = {0};
-  std::vector<std::string> &&v = trantor::utils::splitString(datetime, " ");
-  if (2 == v.size()) {
-    // date
-    std::vector<std::string> date = trantor::utils::splitString(v[0], "-");
-    if (3 == date.size()) {
-      year  = std::stol(date[0]);
-      month = std::stol(date[1]);
-      day   = std::stol(date[2]);
-      // time
-      std::vector<std::string> time = trantor::utils::splitString(v[1], ":");
-      if (2 < time.size()) {
-        hour         = std::stol(time[0]);
-        minute       = std::stol(time[1]);
-        auto seconds = trantor::utils::splitString(time[2], ".");
-        second       = std::stol(seconds[0]);
-        if (1 < seconds.size()) {
-          if (seconds[1].length() > 6) {
-            seconds[1].resize(6);
-          } else if (seconds[1].length() < 6) {
-            seconds[1].append(6 - seconds[1].length(), '0');
-          }
-          microSecond = std::stol(seconds[1]);
-        }
-      }
-    }
-  }
-  return Date(year, month, day, hour, minute, second, microSecond);
 }
 
 /**
@@ -462,7 +469,7 @@ std::string Date::toFormattedStringLocal(bool showMicroseconds) const {
  *  - "2018-01-01 10:10:25:102414" if the @p fmtStr is "%Y-%m-%d %H:%M:%S"
  *    and the @p showMicroseconds is true
  */
-std::string Date::toCustomizedFormattedString(std::string_view fmtStr, bool showMicroseconds) const {
+std::string Date::toCustomFormattedString(std::string_view fmtStr, bool showMicroseconds) const {
   char      buf[256] = {0};
   time_t    seconds  = static_cast<time_t>(microSecondsSinceEpoch_ / MICRO_SECONDS_PRE_SEC);
   struct tm tm_time;
@@ -489,7 +496,7 @@ std::string Date::toCustomizedFormattedString(std::string_view fmtStr, bool show
  * @param showMicroseconds
  * @return std::string
  */
-std::string Date::toCustomizedFormattedStringLocal(std::string_view fmtStr, bool showMicroseconds) const {
+std::string Date::toCustomFormattedStringLocal(std::string_view fmtStr, bool showMicroseconds) const {
   char      buf[256] = {0};
   time_t    seconds  = static_cast<time_t>(microSecondsSinceEpoch_ / MICRO_SECONDS_PRE_SEC);
   struct tm tm_time;
@@ -516,7 +523,7 @@ std::string Date::toCustomizedFormattedStringLocal(std::string_view fmtStr, bool
  * @param str The string buffer for the generated time string.
  * @param len The length of the string buffer.
  */
-void Date::toCustomizedFormattedString(std::string_view fmtStr, char *str, size_t len) const {
+void Date::toCustomFormattedString(std::string_view fmtStr, char *str, size_t len) const {
   // not safe
   time_t    seconds = static_cast<time_t>(microSecondsSinceEpoch_ / MICRO_SECONDS_PRE_SEC);
   struct tm tm_time;

@@ -1,10 +1,11 @@
 // sha3.h
 // 19-Nov-11  Markku-Juhani O. Saarinen <mjos@iki.fi>
 
-#pragma once
+#ifndef TRANTOR_SHA3_H
+#define TRANTOR_SHA3_H
 
-#include <stddef.h>
-#include <stdint.h>
+#include <cstdint>
+#include <cstring>
 
 // state context
 typedef struct {
@@ -33,3 +34,5 @@ void *trantor_sha3(const void *in, size_t inlen, void *md, int mdlen);
 
 void trantor_shake_xof(SHA3_CTX *ctx);
 void trantor_shake_out(SHA3_CTX *ctx, void *out, size_t len);
+
+#endif  // TRANTOR_SHA3_H

@@ -12,9 +12,11 @@
  *
  */
 
-#pragma once
+#ifndef TRANTOR_HASH_H
+#define TRANTOR_HASH_H
 
 #include "trantor/exports.h"
+#include <cstring>
 #include <string>
 #include <string_view>
 
@@ -103,5 +105,5 @@ TRANTOR_EXPORT inline std::string toHexString(const Hash256 &hash) {
 }
 
 }  // namespace utils
-
 }  // namespace trantor
+#endif  // TRANTOR_HASH_H

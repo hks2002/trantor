@@ -1,9 +1,7 @@
 [requires]
-spdlog/1.13.0
-c-ares/1.26.0
-gtest/1.14.0
-openssl/3.2.0
-#botan/3.2.0
+spdlog/1.14.1
+c-ares/1.33.0
+gtest/1.15.0
 
 [generators]
 CMakeDeps

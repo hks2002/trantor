@@ -1,6 +1,27 @@
 # notes for additional commands
 # 
-# nargs: '*'                    to allow multiple arguments
+# Number of positional arguments. Can be an integer indicating an exact
+# number of arguments, or a string satisfying the regex:
+# "(\d*)\+?|\*|\?". The semantics of the string:
+#
+#   * "?": zero or one
+#   * "*": zero or more
+#   * "+": one or more
+#   * (\d+): exactly `n` positional arguments (e.g. "3")
+#   * (\d+)\+ : as many positional arguments as available, but at least
+#     `n` (e.g. "3+")
+#
+# "nargs": <string,int>,
+#
+# Stores a list of keywords that are treated as positional arguments and
+# included in the positional group, but annotated as keywords for special
+# processing (e.g. case canonicalization).
+# "flags": [<string>, ...],
+#
+# Stores a list of tags to apply to this positional argument group. See
+# below for more information on tags.
+# "tags": [<string>]
+#
 # kwargs: &fookwargs            to definite keyword arguments
 # kwargs: *fookwargs            to use the same keyword arguments as fookwargs
 # NAME:   1                     to allow single keyword arguments
@@ -29,25 +50,38 @@ parse:
       pargs:
         nargs: '*'
         flags: []
-    execute_process:
+    execute_process: 
       pargs:
         nargs: '*'
         flags: []
       kwargs:
         COMMAND: +
         WORKING_DIRECTORY: 1
+        OUTPUT_VARIABLE: 1
+        ERROR_VARIABLE: 1
+        RESULT_VARIABLE: 1
     set_target_properties:
       pargs:
         nargs: '*'
         flags: []
       kwargs:
         PROPERTIES: +
+        VERSION: 1
+        SOVERSION: 1
         IMPORTED_LOCATION: 1
-        INTERFACE_INCLUDE_DIRECTORIES: 1
+        INTERFACE_INCLUDE_DIRECTORIES: 1 
+    string:
+      pargs:
+        nargs: '*'
+        flags: []
+      kwargs:
+        SUBSTRING: 1
+        REGEX: 1
+        MATCH: 1
+        FIND: 1
 format:
       tab_size: 2
-      line_width: 120
+      line_width: 180
       autosort: true
       dangle_parens: true
-      max_subgroups_hwrap: 2
       max_pargs_hwrap: 3

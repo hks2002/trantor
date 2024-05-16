@@ -23,19 +23,11 @@ set_property(TARGET ${UNITTEST_TARGETS} PROPERTY CXX_STANDARD 17)
 set_property(TARGET ${UNITTEST_TARGETS} PROPERTY CXX_STANDARD_REQUIRED ON)
 set_property(TARGET ${UNITTEST_TARGETS} PROPERTY CXX_EXTENSIONS OFF)
 
-if(NOT BUILD_DEPENDENCIES)
-  find_package(GTest REQUIRED)
-endif()
-
 include(GoogleTest)
 
 foreach(T ${UNITTEST_TARGETS})
-  if(BUILD_DEPENDENCIES)
-    target_include_directories(${T} PRIVATE ${gtest_SOURCE_DIR}/include)
-  endif()
-
-  target_link_libraries(${T} PRIVATE trantor GTest::gtest_main)
-  set_standard_build_output(${T})
+  message(STATUS "Setting Testing ${T}")
+  target_link_libraries(${T} PRIVATE ${PROJECT_NAME} GTest::gtest_main)
 
   gtest_discover_tests(${T})
 endforeach()

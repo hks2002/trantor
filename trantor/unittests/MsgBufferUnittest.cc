@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
-#include <trantor/utils/MsgBuffer.h>
-
 #include <string>
+#include <trantor/net/MsgBuffer.h>
 using namespace trantor;
 
 TEST(MsgBufferTest, readableTest) {

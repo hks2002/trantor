@@ -32,12 +32,12 @@ jobs:
         run: |
           sh ./deps.ubuntu-20.04+.sh
 
-      - name: Configure Cmake [ BUILD_DEPENDENCIES OFF | SPDLOG OFF | C-ARES OFF ]
+      - name: Configure Cmake [ BUILD_MISSING_DEPENDENCIES OFF | SPDLOG OFF | C-ARES OFF ]
         run: |
           cmake -B build -S . \
           -DCMAKE_BUILD_TYPE=${{matrix.build-type}} \
           -DBUILD_SHARED_LIBS=$shared \
-          -DBUILD_DEPENDENCIES=OFF \
+          -DBUILD_MISSING_DEPENDENCIES=OFF \
           -DTRANTOR_USE_SPDLOG=OFF \
           -DTRANTOR_USE_C-ARES=OFF \
           -DTRANTOR_TLS_PROVIDER=${{matrix.tls-provider}} \
@@ -53,12 +53,12 @@ jobs:
         run: |
           make test
 
-      - name: Configure Cmake [ BUILD_DEPENDENCIES OFF | SPDLOG ON | C-ARES ON ]
+      - name: Configure Cmake [ BUILD_MISSING_DEPENDENCIES OFF | SPDLOG ON | C-ARES ON ]
         run: |
           cmake -B build -S . \
           -DCMAKE_BUILD_TYPE=${{matrix.build-type}} \
           -DBUILD_SHARED_LIBS=$shared \
-          -DBUILD_DEPENDENCIES=OFF \
+          -DBUILD_MISSING_DEPENDENCIES=OFF \
           -DTRANTOR_USE_SPDLOG=ON \
           -DTRANTOR_USE_C-ARES=ON \
           -DTRANTOR_TLS_PROVIDER=${{matrix.tls-provider}} \

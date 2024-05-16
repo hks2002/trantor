@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.5.20] - 2024-07-20
+
+### Changed
+
+- Add byte order detection for internal SHA1 implementation for OSX, POWER, RISC-V and s390.
+
+### Fixed
+
+- Fix Windows CI build fail by using the latest MSVC.
+
+- Fix the Botan TLS provider build on Linux.
+
+- Fix "pthread not found" build error when using Android NDK.
+
+## [1.5.19] - 2024-06-08
+
+### changed
+
+- show forked repository build status.
+
+- Add cmake-format.
+
+- Some spelling corrections.
+
+## [1.5.18] - 2024-05-04
+
+### Fixed
+
+- Fix data type conflict.
+
+- Fix build on latest c-ares.
+
 ## [1.5.17] - 2024-02-09
 
 ### Changed
@@ -212,7 +244,7 @@ All notable changes to this project will be documented in this file.
 
 - Stop calling abort() in runtime.
 
-- Give EventLoopThread::loop_ static lifetime.
+- Give EventLoopThread::loop\_ static lifetime.
 
 - Optimization SSL name matching.
 
@@ -526,7 +558,7 @@ All notable changes to this project will be documented in this file.
 
 ### API changes list
 
-- Add the send(const void *, size_t) method to the TcpConnection class
+- Add the send(const void \*, size_t) method to the TcpConnection class
 
 - Add the send(const MsgBufferPtr &) method to TcpConnection class
 
@@ -636,86 +668,48 @@ All notable changes to this project will be documented in this file.
 
 ## [1.0.0-rc1] - 2019-06-11
 
-[Unreleased]: https://github.com/an-tao/trantor/compare/v1.5.17...HEAD
-
+[Unreleased]: https://github.com/an-tao/trantor/compare/v1.5.20...HEAD
+[1.5.20]: https://github.com/an-tao/trantor/compare/v1.5.19...v1.5.20
+[1.5.19]: https://github.com/an-tao/trantor/compare/v1.5.18...v1.5.19
+[1.5.18]: https://github.com/an-tao/trantor/compare/v1.5.17...v1.5.18
 [1.5.17]: https://github.com/an-tao/trantor/compare/v1.5.16...v1.5.17
-
 [1.5.16]: https://github.com/an-tao/trantor/compare/v1.5.15...v1.5.16
-
 [1.5.15]: https://github.com/an-tao/trantor/compare/v1.5.14...v1.5.15
-
 [1.5.14]: https://github.com/an-tao/trantor/compare/v1.5.13...v1.5.14
-
 [1.5.13]: https://github.com/an-tao/trantor/compare/v1.5.12...v1.5.13
-
 [1.5.12]: https://github.com/an-tao/trantor/compare/v1.5.11...v1.5.12
-
 [1.5.11]: https://github.com/an-tao/trantor/compare/v1.5.10...v1.5.11
-
 [1.5.10]: https://github.com/an-tao/trantor/compare/v1.5.9...v1.5.10
-
 [1.5.9]: https://github.com/an-tao/trantor/compare/v1.5.8...v1.5.9
-
 [1.5.8]: https://github.com/an-tao/trantor/compare/v1.5.7...v1.5.8
-
 [1.5.7]: https://github.com/an-tao/trantor/compare/v1.5.6...v1.5.7
-
 [1.5.6]: https://github.com/an-tao/trantor/compare/v1.5.5...v1.5.6
-
 [1.5.5]: https://github.com/an-tao/trantor/compare/v1.5.4...v1.5.5
-
 [1.5.4]: https://github.com/an-tao/trantor/compare/v1.5.3...v1.5.4
-
 [1.5.3]: https://github.com/an-tao/trantor/compare/v1.5.2...v1.5.3
-
 [1.5.2]: https://github.com/an-tao/trantor/compare/v1.5.1...v1.5.2
-
 [1.5.1]: https://github.com/an-tao/trantor/compare/v1.5.0...v1.5.1
-
 [1.5.0]: https://github.com/an-tao/trantor/compare/v1.4.1...v1.5.0
-
 [1.4.1]: https://github.com/an-tao/trantor/compare/v1.4.0...v1.4.1
-
 [1.4.0]: https://github.com/an-tao/trantor/compare/v1.3.0...v1.4.0
-
 [1.3.0]: https://github.com/an-tao/trantor/compare/v1.2.0...v1.3.0
-
 [1.2.0]: https://github.com/an-tao/trantor/compare/v1.1.1...v1.2.0
-
 [1.1.1]: https://github.com/an-tao/trantor/compare/v1.1.0...v1.1.1
-
 [1.1.0]: https://github.com/an-tao/trantor/compare/v1.0.0...v1.1.0
-
 [1.0.0]: https://github.com/an-tao/trantor/compare/v1.0.0-rc16...v1.0.0
-
 [1.0.0-rc16]: https://github.com/an-tao/trantor/compare/v1.0.0-rc15...v1.0.0-rc16
-
 [1.0.0-rc15]: https://github.com/an-tao/trantor/compare/v1.0.0-rc14...v1.0.0-rc15
-
 [1.0.0-rc14]: https://github.com/an-tao/trantor/compare/v1.0.0-rc13...v1.0.0-rc14
-
 [1.0.0-rc13]: https://github.com/an-tao/trantor/compare/v1.0.0-rc12...v1.0.0-rc13
-
 [1.0.0-rc12]: https://github.com/an-tao/trantor/compare/v1.0.0-rc11...v1.0.0-rc12
-
 [1.0.0-rc11]: https://github.com/an-tao/trantor/compare/v1.0.0-rc10...v1.0.0-rc11
-
 [1.0.0-rc10]: https://github.com/an-tao/trantor/compare/v1.0.0-rc9...v1.0.0-rc10
-
 [1.0.0-rc9]: https://github.com/an-tao/trantor/compare/v1.0.0-rc8...v1.0.0-rc9
-
 [1.0.0-rc8]: https://github.com/an-tao/trantor/compare/v1.0.0-rc7...v1.0.0-rc8
-
 [1.0.0-rc7]: https://github.com/an-tao/trantor/compare/v1.0.0-rc6...v1.0.0-rc7
-
 [1.0.0-rc6]: https://github.com/an-tao/trantor/compare/v1.0.0-rc5...v1.0.0-rc6
-
 [1.0.0-rc5]: https://github.com/an-tao/trantor/compare/v1.0.0-rc4...v1.0.0-rc5
-
 [1.0.0-rc4]: https://github.com/an-tao/trantor/compare/v1.0.0-rc3...v1.0.0-rc4
-
 [1.0.0-rc3]: https://github.com/an-tao/trantor/compare/v1.0.0-rc2...v1.0.0-rc3
-
 [1.0.0-rc2]: https://github.com/an-tao/trantor/compare/v1.0.0-rc1...v1.0.0-rc2
-
 [1.0.0-rc1]: https://github.com/an-tao/trantor/releases/tag/v1.0.0-rc1

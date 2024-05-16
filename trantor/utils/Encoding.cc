@@ -15,8 +15,11 @@
 #include "Encoding.h"
 
 #ifdef _WIN32
-#include <algorithm>
+// clang-format off
 #include <windows.h>
+#include <algorithm>
+#include <stringapiset.h>
+// clang-format on
 #else  // _WIN32
 #include <string.h>
 #include <unistd.h>
@@ -28,6 +31,8 @@
 #include <locale>
 #endif  // __cplusplus
 #endif  // _WIN32
+
+using namespace std;
 
 namespace trantor {
 namespace utils {

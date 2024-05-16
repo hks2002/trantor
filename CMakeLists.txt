@@ -1,7 +1,16 @@
-# CMake version < 3.14, could not use option BUILD_DEPENDENCIES
-cmake_minimum_required(VERSION 3.10)
-project(trantor)
+cmake_minimum_required(VERSION 3.11)
+project(
+  trantor
+  DESCRIPTION "Non-blocking I/O cross-platform TCP network library, using C++17"
+  HOMEPAGE_URL "https://github.com/an-tao/trantor"
+)
 add_library(${PROJECT_NAME})
+
+# Version
+set(TRANTOR_MAJOR_VERSION 1)
+set(TRANTOR_MINOR_VERSION 5)
+set(TRANTOR_PATCH_VERSION 20)
+set(TRANTOR_VERSION ${TRANTOR_MAJOR_VERSION}.${TRANTOR_MINOR_VERSION}.${TRANTOR_PATCH_VERSION})
 
 # C++ standard
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
@@ -9,32 +18,148 @@ set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
 
 # Build options
-option(BUILD_SHARED_LIBS "Build Trantor as a shared lib" OFF)
-option(BUILD_TESTING "Build tests" ON)
-option(BUILD_DOC "Build Doxygen documentation" OFF)
-option(BUILD_DEPENDENCIES "Fetch and build dependencies" ON)
-option(TRANTOR_USE_SPDLOG "Allow using the spdlog logging library" OFF)
-option(TRANTOR_USE_C-ARES "Allow using C-ARES" OFF)
-set(TRANTOR_TLS_PROVIDER
-    "none"
-    CACHE STRING "TLS(Transport Layer Security) provider for trantor. Valid options are
- 'none', 'openssl', 'botan-3', 'auto'."
-)
-
-# Version
-set(TRANTOR_MAJOR_VERSION 1)
-set(TRANTOR_MINOR_VERSION 5)
-set(TRANTOR_PATCH_VERSION 17)
-set(TRANTOR_VERSION ${TRANTOR_MAJOR_VERSION}.${TRANTOR_MINOR_VERSION}.${TRANTOR_PATCH_VERSION})
+include(cmake/SetBuildOptions.cmake)
 if(BUILD_SHARED_LIBS)
   set_target_properties(
     ${PROJECT_NAME}
-    PROPERTIES VERSION
-               ${TRANTOR_VERSION}
-               SOVERSION
-               ${TRANTOR_MAJOR_VERSION}
+    PROPERTIES
+    VERSION ${TRANTOR_VERSION}
+    SOVERSION ${TRANTOR_MAJOR_VERSION}
   )
 endif()
+
+# Sources and headers
+set(PUBLIC_HEADERS # cmake-format: sortable
+                   trantor/Callbacks.h trantor/NonCopyable.h trantor/ObjectPool.h
+)
+
+set(PUBLIC_UTILS_HEADERS
+    # cmake-format: sortable
+    trantor/utils/Date.h
+    trantor/utils/Encoding.h
+    trantor/utils/Hash.h
+    trantor/utils/StringUtils.h
+)
+
+set(PUBLIC_LOGGER_HEADERS
+    # cmake-format: sortable
+    trantor/logger/AsyncFileLogger.h
+    trantor/logger/FixedBuffer.h
+    trantor/logger/Fmt.h
+    trantor/logger/Logger.h
+    trantor/logger/LoggerFile.h
+    trantor/logger/LogStream.h
+    trantor/logger/RawLogger.h
+    trantor/logger/SourceFile.h
+)
+
+set(PUBLIC_NET_HEADERS
+    # cmake-format: sortable
+    trantor/net/Acceptor.h
+    trantor/net/AsyncStream.h
+    trantor/net/Certificate.h
+    trantor/net/Connector.h
+    trantor/net/core/Channel.h
+    trantor/net/core/ConcurrentTaskQueue.h
+    trantor/net/core/EventLoop.h
+    trantor/net/core/EventLoopThread.h
+    trantor/net/core/EventLoopThreadPool.h
+    trantor/net/core/LockFreeQueue.h
+    trantor/net/core/poller/EpollPoller.h
+    trantor/net/core/poller/KQueue.h
+    trantor/net/core/poller/Poller.h
+    trantor/net/core/poller/PollPoller.h
+    trantor/net/core/SerialTaskQueue.h
+    trantor/net/core/TaskQueue.h
+    trantor/net/core/Timer.h
+    trantor/net/core/TimerQueue.h
+    trantor/net/core/TimingWheel.h
+    trantor/net/InetAddress.h
+    trantor/net/MsgBuffer.h
+    trantor/net/resolver/Resolver.h
+    trantor/net/Socket.h
+    trantor/net/TcpClient.h
+    trantor/net/TcpConnection.h
+    trantor/net/TcpConnectionImpl.h
+    trantor/net/TcpServer.h
+    trantor/net/TLSPolicy.h
+)
+
+set(TRANTOR_SOURCES
+    # cmake-format: sortable
+    trantor/logger/AsyncFileLogger.cc
+    trantor/logger/FixedBuffer.cc
+    trantor/logger/Fmt.cc
+    trantor/logger/Logger.cc
+    trantor/logger/LoggerFile.cc
+    trantor/logger/LogStream.cc
+    trantor/logger/RawLogger.cc
+    trantor/net/Acceptor.cc
+    trantor/net/buffernode/AsyncStreamBufferNode.cc
+    trantor/net/buffernode/MemBufferNode.cc
+    trantor/net/buffernode/StreamBufferNode.cc
+    trantor/net/Connector.cc
+    trantor/net/core/Channel.cc
+    trantor/net/core/ConcurrentTaskQueue.cc
+    trantor/net/core/EventLoop.cc
+    trantor/net/core/EventLoopThread.cc
+    trantor/net/core/EventLoopThreadPool.cc
+    trantor/net/core/poller/EpollPoller.cc
+    trantor/net/core/poller/KQueue.cc
+    trantor/net/core/poller/Poller.cc
+    trantor/net/core/poller/PollPoller.cc
+    trantor/net/core/SerialTaskQueue.cc
+    trantor/net/core/Timer.cc
+    trantor/net/core/TimerQueue.cc
+    trantor/net/core/TimingWheel.cc
+    trantor/net/InetAddress.cc
+    trantor/net/MsgBuffer.cc
+    trantor/net/Socket.cc
+    trantor/net/TcpClient.cc
+    trantor/net/TcpConnectionImpl.cc
+    trantor/net/TcpServer.cc
+    trantor/utils/Date.cc
+    trantor/utils/Encoding.cc
+    trantor/utils/Hash.cc
+    trantor/utils/StringUtils.cc
+)
+
+if(WIN32)
+  list(
+    APPEND
+    PRIVATE_HEADERS
+    # cmake-format: sortable
+    third_party/wepoll/Wepoll.h
+    trantor/net/WindowsSupport.h
+  )
+  list(
+    APPEND
+    TRANTOR_SOURCES
+    # cmake-format: sortable
+    third_party/wepoll/Wepoll.c
+    trantor/net/WindowsSupport.cc
+    trantor/net/buffernode/FileBufferNodeWin.cc
+  )
+else()
+  list(APPEND TRANTOR_SOURCES trantor/net/buffernode/FileBufferNodeUnix.cc)
+endif()
+
+# Export header
+include(cmake/SetExportHeader.cmake)
+
+# Target include directories
+target_include_directories(
+  ${PROJECT_NAME}
+  PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/exports> $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
+  PRIVATE ${PROJECT_SOURCE_DIR}
+          ${PROJECT_SOURCE_DIR}/trantor
+          ${PROJECT_SOURCE_DIR}/trantor/logger
+          ${PROJECT_SOURCE_DIR}/trantor/utils
+          ${PROJECT_SOURCE_DIR}/trantor/net
+          ${PROJECT_SOURCE_DIR}/trantor/net/core
+          ${PROJECT_SOURCE_DIR}/trantor/net/inner
+          $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/third_party/wepoll>
+)
 
 # CMake modules
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules/)
@@ -42,151 +167,37 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules/)
 # Common settings
 include(cmake/SetSystemAndCompiler.cmake)
 include(cmake/SetThreads.cmake)
-include(cmake/TestAtomic.cmake)
-include(cmake/SetBuildOutput.cmake)
-
-# Sources and headers
-set(TRANTOR_SOURCES
-    # cmake-format: sortable
-    trantor/net/Channel.cc
-    trantor/net/EventLoop.cc
-    trantor/net/EventLoopThread.cc
-    trantor/net/EventLoopThreadPool.cc
-    trantor/net/InetAddress.cc
-    trantor/net/inner/Acceptor.cc
-    trantor/net/inner/AsyncStreamBufferNode.cc
-    trantor/net/inner/Connector.cc
-    trantor/net/inner/MemBufferNode.cc
-    trantor/net/inner/Poller.cc
-    trantor/net/inner/poller/EpollPoller.cc
-    trantor/net/inner/poller/KQueue.cc
-    trantor/net/inner/poller/PollPoller.cc
-    trantor/net/inner/Socket.cc
-    trantor/net/inner/StreamBufferNode.cc
-    trantor/net/inner/TcpConnectionImpl.cc
-    trantor/net/inner/Timer.cc
-    trantor/net/inner/TimerQueue.cc
-    trantor/net/TcpClient.cc
-    trantor/net/TcpServer.cc
-    trantor/utils/AsyncFileLogger.cc
-    trantor/utils/ConcurrentTaskQueue.cc
-    trantor/utils/Date.cc
-    trantor/utils/Logger.cc
-    trantor/utils/LogStream.cc
-    trantor/utils/MsgBuffer.cc
-    trantor/utils/SerialTaskQueue.cc
-    trantor/utils/TimingWheel.cc
-    trantor/utils/Utilities.cc
-)
-set(PRIVATE_HEADERS
-    # cmake-format: sortable
-    trantor/net/inner/Acceptor.h
-    trantor/net/inner/Connector.h
-    trantor/net/inner/Poller.h
-    trantor/net/inner/poller/EpollPoller.h
-    trantor/net/inner/poller/KQueue.h
-    trantor/net/inner/poller/PollPoller.h
-    trantor/net/inner/Socket.h
-    trantor/net/inner/TcpConnectionImpl.h
-    trantor/net/inner/Timer.h
-    trantor/net/inner/TimerQueue.h
-)
-
-if(WIN32)
-  list(
-    APPEND
-    TRANTOR_SOURCES
-    # cmake-format: sortable
-    third_party/wepoll/Wepoll.c
-    trantor/utils/WindowsSupport.cc
-    trantor/net/inner/FileBufferNodeWin.cc
-  )
-  list(
-    APPEND
-    PRIVATE_HEADERS
-    # cmake-format: sortable
-    third_party/wepoll/Wepoll.h
-    trantor/utils/WindowsSupport.h
-  )
-else()
-  list(APPEND TRANTOR_SOURCES trantor/net/inner/FileBufferNodeUnix.cc)
-endif()
-
-set(PUBLIC_NET_HEADERS
-    # cmake-format: sortable
-    trantor/net/AsyncStream.h
-    trantor/net/callbacks.h
-    trantor/net/Certificate.h
-    trantor/net/Channel.h
-    trantor/net/EventLoop.h
-    trantor/net/EventLoopThread.h
-    trantor/net/EventLoopThreadPool.h
-    trantor/net/InetAddress.h
-    trantor/net/Resolver.h
-    trantor/net/TcpClient.h
-    trantor/net/TcpConnection.h
-    trantor/net/TcpServer.h
-    trantor/net/TLSPolicy.h
-)
-
-set(PUBLIC_UTILS_HEADERS
-    # cmake-format: sortable
-    trantor/utils/AsyncFileLogger.h
-    trantor/utils/ConcurrentTaskQueue.h
-    trantor/utils/Date.h
-    trantor/utils/Funcs.h
-    trantor/utils/LockFreeQueue.h
-    trantor/utils/Logger.h
-    trantor/utils/LogStream.h
-    trantor/utils/MsgBuffer.h
-    trantor/utils/NonCopyable.h
-    trantor/utils/ObjectPool.h
-    trantor/utils/SerialTaskQueue.h
-    trantor/utils/TaskQueue.h
-    trantor/utils/TimingWheel.h
-    trantor/utils/Utilities.h
-)
-
-# Build Dependencies
-include(cmake/SetInstallDirs.cmake)
-include(cmake/BuildDependencies.cmake)
 
 # Set options
-include(cmake/SetCAres.cmake)
+include(cmake/SetOptionsDependencies.cmake)
 include(cmake/SetSpdlog.cmake)
+include(cmake/SetCAres.cmake)
 include(cmake/SetTlsProvider.cmake)
 include(cmake/SetTesting.cmake)
-
-# Export header
-include(cmake/SetExportHeader.cmake)
+include(cmake/SetDoxygen.cmake)
 
 # Group sources
-source_group("Public API" FILES ${PUBLIC_NET_HEADERS} ${PUBLIC_UTILS_HEADERS} ${TRANTOR_EXPORT_HEADER})
-source_group("Private Headers" FILES ${PRIVATE_HEADERS})
+source_group(
+  "Public API"
+  FILES ${PUBLIC_HEADERS}
+        ${PUBLIC_LOGGER_HEADERS}
+        ${PUBLIC_UTILS_HEADERS}
+        ${PUBLIC_NET_HEADERS}
+        ${TRANTOR_EXPORT_HEADER}
+)
 
 # Target sources
 target_sources(
   ${PROJECT_NAME}
-  PRIVATE ${TRANTOR_SOURCES}
-          ${PRIVATE_HEADERS}
-          ${PUBLIC_NET_HEADERS}
+  PRIVATE ${PUBLIC_HEADERS}
+          ${PUBLIC_LOGGER_HEADERS}
           ${PUBLIC_UTILS_HEADERS}
+          ${PUBLIC_NET_HEADERS}
+          ${PRIVATE_HEADERS}
           ${TRANTOR_EXPORT_HEADER}
-)
-
-# Target include directories
-target_include_directories(
-  ${PROJECT_NAME}
-  PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}> $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
-         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/exports>
-  PRIVATE ${PROJECT_SOURCE_DIR}
-          ${PROJECT_SOURCE_DIR}/trantor/utils
-          ${PROJECT_SOURCE_DIR}/trantor/net
-          ${PROJECT_SOURCE_DIR}/trantor/net/inner
-          $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/third_party/wepoll>
+          ${TRANTOR_SOURCES}
 )
 
 # Set additional
-include(cmake/SetDoxygen.cmake)
-include(cmake/SetPackageConfig.cmake)
 include(cmake/SetInstall.cmake)
+include(cmake/SetPackageConfig.cmake)

@@ -7,7 +7,7 @@ if(BUILD_DOC)
 
   find_package(Doxygen OPTIONAL_COMPONENTS dot dia)
   if(DOXYGEN_FOUND)
-    set(DOXYGEN_PROJECT_BRIEF "Non-blocking I/O cross-platform TCP network library, using C++14")
+    set(DOXYGEN_PROJECT_BRIEF "Non-blocking I/O cross-platform TCP network library, using C++17")
     set(DOXYGEN_OUTPUT_DIRECTORY docs/${PROJECT_NAME})
     set(DOXYGEN_GENERATE_LATEX NO)
     set(DOXYGEN_BUILTIN_STL_SUPPORT YES)
@@ -18,8 +18,10 @@ if(BUILD_DOC)
       doc_${PROJECT_NAME}
       README.md
       ChangeLog.md
-      ${public_net_headers}
-      ${public_utils_headers}
+      ${TRANTOR_SOURCES}
+      ${PRIVATE_SOURCES}
+      ${PUBLIC_NET_HEADERS}
+      ${PUBLIC_UTILS_HEADERS}
       COMMENT "Generate documentation"
     )
     add_dependencies(${PROJECT_NAME} doc_${PROJECT_NAME})

@@ -6,12 +6,12 @@
  * Details:    Defines the API for the corresponding SHA1 implementation.
  *********************************************************************/
 
-#pragma once
+#ifndef TRANTOR_SHA256_H
+#define TRANTOR_SHA256_H
 
-/*************************** HEADER FILES ***************************/
-#include <stdint.h>
+#include <cstdint>
+#include <cstring>
 
-/****************************** MACROS ******************************/
 #define SHA256_BLOCK_SIZE 32  // SHA256 outputs a 32 byte digest
 
 typedef struct {
@@ -21,7 +21,8 @@ typedef struct {
   uint32_t state[8];
 } SHA256_CTX;
 
-/*********************** FUNCTION DECLARATIONS **********************/
 void trantor_sha256_init(SHA256_CTX *ctx);
 void trantor_sha256_update(SHA256_CTX *ctx, const uint8_t data[], size_t len);
 void trantor_sha256_final(SHA256_CTX *ctx, uint8_t hash[]);
+
+#endif  // TRANTOR_SHA256_H

@@ -7,9 +7,11 @@ By Steve Reid <steve@edmweb.com>
 Last modified by Martin Chang for the Trantor project
 */
 
-#pragma once
+#ifndef TRANTOR_SHA1_H
+#define TRANTOR_SHA1_H
 
-#include <stdint.h>
+#include <cstdint>
+#include <cstring>
 
 typedef struct {
   uint32_t      state[5];
@@ -21,3 +23,5 @@ void trantor_sha1_transform(uint32_t state[5], const unsigned char buffer[64]);
 void trantor_sha1_init(SHA1_CTX* ctx);
 void trantor_sha1_update(SHA1_CTX* ctx, const unsigned char* data, size_t len);
 void trantor_sha1_final(unsigned char digest[20], SHA1_CTX* ctx);
+
+#endif  // TRANTOR_SHA1_H

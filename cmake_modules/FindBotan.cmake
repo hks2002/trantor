@@ -52,10 +52,10 @@ function(find_botan_search package_name)
   endif()
 endfunction()
 
-# ######################################################################################################################
+# ##################################################################################################################################################################################
 # Using find_package with verion: find_package(Botan 3) or find_package(Botan 2)
 if(NOT DEFINED Botan_FIND_VERSION)
-  message(FATAL_ERROR "Must specify Botan version: find_package(Botan 3) or find_package(Botan 2)")
+  message(FATAL_ERROR "⛔Must specify Botan version: find_package(Botan 3) or find_package(Botan 2)")
 endif()
 
 if(NOT WIN32)

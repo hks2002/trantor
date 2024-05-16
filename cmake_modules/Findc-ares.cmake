@@ -1,4 +1,5 @@
-#[[ Try to find c-ares library Once done this will define
+#[[
+# Try to find c-ares library Once done this will define
 #
 # c-ares_FOUND - system has c-ares
 # C-ARES_INCLUDE_DIRS - The c-ares include directory
@@ -18,7 +19,6 @@ if(C-ARES_INCLUDE_DIRS AND C-ARES_LIBRARIES)
     INTERFACE_INCLUDE_DIRECTORIES "${C-ARES_INCLUDE_DIRS}" INTERFACE_LINK_LIBRARIES "${C-ARES_LIBRARIES}"
   )
 endif()
-
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(
   c-ares
