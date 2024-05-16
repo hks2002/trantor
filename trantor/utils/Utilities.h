@@ -15,16 +15,17 @@
 #pragma once
 
 #include <trantor/exports.h>
-#include <string>
 
-namespace trantor
-{
+#include <string>
+#include <string_view>
+#include <vector>
+
+namespace trantor {
 /**
  * @brief Trantor helper functions.
  *
  */
-namespace utils
-{
+namespace utils {
 /**
  * @brief Convert a wide string to a UTF-8.
  * @details UCS2 on Windows, UTF-32 on Linux & Mac
@@ -100,9 +101,8 @@ TRANTOR_EXPORT std::wstring toWidePath(const std::string &strUtf8Path);
  *
  * @return Native path suitable for the Windows unicode API.
  */
-inline std::wstring toNativePath(const std::string &strPath)
-{
-    return toWidePath(strPath);
+inline std::wstring toNativePath(const std::string &strPath) {
+  return toWidePath(strPath);
 }
 /**
  * @details Convert an UTF-8 path to a native path.
@@ -115,9 +115,8 @@ inline std::wstring toNativePath(const std::string &strPath)
  *
  * @return \p strPath.
  */
-inline const std::wstring &toNativePath(const std::wstring &strPath)
-{
-    return strPath;
+inline const std::wstring &toNativePath(const std::wstring &strPath) {
+  return strPath;
 }
 #else   // __WIN32
 /**
@@ -131,9 +130,8 @@ inline const std::wstring &toNativePath(const std::wstring &strPath)
  *
  * @return \p strPath.
  */
-inline const std::string &toNativePath(const std::string &strPath)
-{
-    return strPath;
+inline const std::string &toNativePath(const std::string &strPath) {
+  return strPath;
 }
 /**
  * @details Convert an wide string path to a UTF-8 path.
@@ -150,25 +148,22 @@ inline const std::string &toNativePath(const std::string &strPath)
  *
  * @return Generic path, with slash directory separators
  */
-inline std::string toNativePath(const std::wstring &strPath)
-{
-    return fromWidePath(strPath);
+inline std::string toNativePath(const std::wstring &strPath) {
+  return fromWidePath(strPath);
 }
 #endif  // _WIN32
 /**
  * @note NoOP on all OSes
  */
-inline const std::string &fromNativePath(const std::string &strPath)
-{
-    return strPath;
+inline const std::string &fromNativePath(const std::string &strPath) {
+  return strPath;
 }
 /**
  * @note fromWidePath() on all OSes
  */
 // Convert on all systems
-inline std::string fromNativePath(const std::wstring &strPath)
-{
-    return fromWidePath(strPath);
+inline std::string fromNativePath(const std::wstring &strPath) {
+  return fromWidePath(strPath);
 }
 
 /**
@@ -186,19 +181,16 @@ bool verifySslName(const std::string &certName, const std::string &hostName);
  */
 TRANTOR_EXPORT std::string tlsBackend();
 
-struct Hash128
-{
-    unsigned char bytes[16];
+struct Hash128 {
+  unsigned char bytes[16];
 };
 
-struct Hash160
-{
-    unsigned char bytes[20];
+struct Hash160 {
+  unsigned char bytes[20];
 };
 
-struct Hash256
-{
-    unsigned char bytes[32];
+struct Hash256 {
+  unsigned char bytes[32];
 };
 
 // provide sane hash functions so users don't have to provide their own
@@ -208,36 +200,32 @@ struct Hash256
  * @note don't use MD5 for new applications. It's here only for compatibility
  */
 TRANTOR_EXPORT Hash128 md5(const void *data, size_t len);
-inline Hash128 md5(const std::string &str)
-{
-    return md5(str.data(), str.size());
+inline Hash128         md5(const std::string &str) {
+  return md5(str.data(), str.size());
 }
 
 /**
  * @brief Compute the SHA1 hash of the given data
  */
 TRANTOR_EXPORT Hash160 sha1(const void *data, size_t len);
-inline Hash160 sha1(const std::string &str)
-{
-    return sha1(str.data(), str.size());
+inline Hash160         sha1(const std::string &str) {
+  return sha1(str.data(), str.size());
 }
 
 /**
  * @brief Compute the SHA256 hash of the given data
  */
 TRANTOR_EXPORT Hash256 sha256(const void *data, size_t len);
-inline Hash256 sha256(const std::string &str)
-{
-    return sha256(str.data(), str.size());
+inline Hash256         sha256(const std::string &str) {
+  return sha256(str.data(), str.size());
 }
 
 /**
  * @brief Compute the SHA3 hash of the given data
  */
 TRANTOR_EXPORT Hash256 sha3(const void *data, size_t len);
-inline Hash256 sha3(const std::string &str)
-{
-    return sha3(str.data(), str.size());
+inline Hash256         sha3(const std::string &str) {
+  return sha3(str.data(), str.size());
 }
 
 /**
@@ -247,9 +235,8 @@ inline Hash256 sha3(const std::string &str)
  * faster in software.
  */
 TRANTOR_EXPORT Hash256 blake2b(const void *data, size_t len);
-inline Hash256 blake2b(const std::string &str)
-{
-    return blake2b(str.data(), str.size());
+inline Hash256         blake2b(const std::string &str) {
+  return blake2b(str.data(), str.size());
 }
 
 /**
@@ -259,19 +246,16 @@ inline Hash256 blake2b(const std::string &str)
  * faster in software.
  */
 TRANTOR_EXPORT std::string toHexString(const void *data, size_t len);
-inline std::string toHexString(const Hash128 &hash)
-{
-    return toHexString(hash.bytes, sizeof(hash.bytes));
+inline std::string         toHexString(const Hash128 &hash) {
+  return toHexString(hash.bytes, sizeof(hash.bytes));
 }
 
-inline std::string toHexString(const Hash160 &hash)
-{
-    return toHexString(hash.bytes, sizeof(hash.bytes));
+inline std::string toHexString(const Hash160 &hash) {
+  return toHexString(hash.bytes, sizeof(hash.bytes));
 }
 
-inline std::string toHexString(const Hash256 &hash)
-{
-    return toHexString(hash.bytes, sizeof(hash.bytes));
+inline std::string toHexString(const Hash256 &hash) {
+  return toHexString(hash.bytes, sizeof(hash.bytes));
 }
 
 /**
@@ -289,6 +273,40 @@ inline std::string toHexString(const Hash256 &hash)
  */
 TRANTOR_EXPORT bool secureRandomBytes(void *ptr, size_t size);
 
+inline uint64_t     hton64(uint64_t n) {
+  static const int  one = 1;
+  static const char sig = *(char *)&one;
+  if (sig == 0) return n;  // for big endian machine just return the input
+  char *ptr = reinterpret_cast<char *>(&n);
+  std::reverse(ptr, ptr + sizeof(uint64_t));
+  return n;
+}
+inline uint64_t ntoh64(uint64_t n) {
+  return hton64(n);
+}
+
+inline std::vector<std::string> splitString(std::string_view sv,
+                                            std::string_view delimiter,
+                                            bool             acceptEmptyString = false) {
+  std::vector<std::string> v;
+  size_t                   last = 0;
+  size_t                   next = 0;
+
+  if (delimiter.empty()) {
+    return v;
+  }
+
+  while ((next = sv.find(delimiter, last)) != std::string::npos) {
+    if (next > last || acceptEmptyString) {
+      v.push_back(std::string(sv.substr(last, next - last)));
+    }
+    last = next + delimiter.length();
+  }
+  if (sv.length() > last || acceptEmptyString) {
+    v.push_back(std::string(sv.substr(last)));
+  }
+  return v;
+}
 }  // namespace utils
 
 }  // namespace trantor
