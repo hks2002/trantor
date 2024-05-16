@@ -1,17 +1,17 @@
-add_executable(hash_unittest HashUnittest.cc)
-add_executable(date_unittest DateUnittest.cc)
-add_executable(inetaddress_unittest InetAddressUnittest.cc)
-add_executable(msgbuffer_unittest MsgBufferUnittest.cc)
 add_executable(split_string_unittest splitStringUnittest.cc)
 add_executable(string_encoding_unittest stringEncodingUnittest.cc)
+add_executable(date_unittest DateUnittest.cc)
+add_executable(hash_unittest HashUnittest.cc)
+add_executable(inetaddress_unittest InetAddressUnittest.cc)
+add_executable(msgbuffer_unittest MsgBufferUnittest.cc)
 
 set(UNITTEST_TARGETS
-    hash_unittest
-    date_unittest
-    inetaddress_unittest
-    msgbuffer_unittest
     split_string_unittest
     string_encoding_unittest
+    date_unittest
+    hash_unittest
+    inetaddress_unittest
+    msgbuffer_unittest
 )
 
 if(TRANTOR_USE_TLS)

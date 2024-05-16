@@ -9,9 +9,4 @@ if(WIN32)
   target_link_libraries(${PROJECT_NAME} PRIVATE Crypt32 Secur32)
 endif()
 
-list(
-  APPEND
-  TRANTOR_SOURCES
-  trantor/net/inner/tlsprovider/OpenSSLProvider.cc
-  trantor/utils/crypto/openssl.cc
-)
+list(APPEND TRANTOR_SOURCES trantor/net/inner/tlsprovider/OpenSSLProvider.cc)

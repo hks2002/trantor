@@ -10,9 +10,4 @@ else()
   target_link_libraries(${PROJECT_NAME} PRIVATE Botan::Botan)
 endif()
 
-list(
-  APPEND
-  TRANTOR_SOURCES
-  trantor/net/inner/tlsprovider/BotanTLSProvider.cc
-  trantor/utils/crypto/botan.cc
-)
+list(APPEND TRANTOR_SOURCES trantor/net/inner/tlsprovider/BotanTLSProvider.cc)
