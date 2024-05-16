@@ -1,9 +1,7 @@
+#include "trantor/utils/Date.h"
 #include <gtest/gtest.h>
-
 #include <iostream>
 #include <string>
-
-#include "trantor/utils/Date.h"
 
 using namespace trantor;
 

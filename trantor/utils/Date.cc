@@ -14,21 +14,26 @@
 
 #include "Date.h"
 
-#include "StringFunctions.h"
+#include "StringUtils.h"
 
 #ifndef _WIN32
 #include <sys/time.h>
 #else
+#include <corecrt.h>
 #include <time.h>
 #include <winsock2.h>
 #endif
 
-#include <cstdlib>
-#include <iostream>
+#include <cstdint>
+#include <cstring>
+#include <stdio.h>
 #include <string>
 #include <string_view>
+#include <utility>
+#include <vector>
 
 namespace trantor {
+
 /**
  * @brief define microseconds per second
  *

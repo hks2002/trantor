@@ -1,6 +1,5 @@
+#include "trantor/utils/StringUtils.h"
 #include <gtest/gtest.h>
-
-#include "trantor/utils/StringFunctions.h"
 
 using namespace trantor;
 

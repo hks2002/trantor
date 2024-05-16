@@ -45,8 +45,6 @@ namespace utils {
  * @param len length of the data
  *
  * @return the MD5 hash as a Hash128 object
- *
- * @throws None
  */
 Hash128 md5(const void *data, size_t len) {
   Hash128 hash;
@@ -88,8 +86,6 @@ Hash128 md5(const void *data, size_t len) {
  * @param len the length of the data in bytes
  *
  * @return the SHA1 hash of the data
- *
- * @throws None
  */
 Hash160 sha1(const void *data, size_t len) {
   Hash160 hash;
@@ -247,8 +243,6 @@ Hash256 blake2b(const void *data, size_t len) {
  * @param len length of the data buffer
  *
  * @return a string containing the hexadecimal representation of the data
- *
- * @throws None
  */
 std::string toHexString(const void *data, size_t len) {
   std::string str;
@@ -262,5 +256,4 @@ std::string toHexString(const void *data, size_t len) {
 }
 
 }  // namespace utils
-
 }  // namespace trantor

@@ -19,9 +19,10 @@ install(
 )
 
 # Install header files
-install(FILES ${public_net_headers} DESTINATION ${INSTALL_INCLUDE_DIR}/trantor/net)
-install(FILES ${public_utils_headers} DESTINATION ${INSTALL_INCLUDE_DIR}/trantor/utils)
-install(FILES ${trantor_export_header} DESTINATION ${INSTALL_INCLUDE_DIR}/trantor)
+install(FILES ${PUBLIC_HEADERS} DESTINATION ${INSTALL_INCLUDE_DIR}/trantor)
+install(FILES ${PUBLIC_NET_HEADERS} DESTINATION ${INSTALL_INCLUDE_DIR}/trantor/net)
+install(FILES ${PUBLIC_UTILS_HEADERS} DESTINATION ${INSTALL_INCLUDE_DIR}/trantor/utils)
+install(FILES ${TRANTOR_EXPORT_HEADER} DESTINATION ${INSTALL_INCLUDE_DIR}/trantor)
 
 # Install the package configuration and package version file and cmake module files
 install(

@@ -12,11 +12,12 @@
  *
  */
 
-#pragma once
+#ifndef TRANTOR_DATE_H
+#define TRANTOR_DATE_H
 
 #include "trantor/exports.h"
 #include <cstdint>
-#include <string>
+#include <string_view>
 
 namespace trantor {
 /**
@@ -71,4 +72,6 @@ private:
   struct tm tmStruct() const;
   int64_t   microSecondsSinceEpoch_{0};
 };
+
 }  // namespace trantor
+#endif  // TRANTOR_DATE_H

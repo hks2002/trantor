@@ -12,9 +12,11 @@
  *
  */
 
-#pragma once
+#ifndef TRANTOR_ENCODING_H
+#define TRANTOR_ENCODING_H
 
 #include "trantor/exports.h"
+#include <algorithm>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -152,5 +154,6 @@ inline uint64_t ntoh64(uint64_t n) {
 }
 
 }  // namespace utils
-
 }  // namespace trantor
+
+#endif  // TRANTOR_ENCODING_H

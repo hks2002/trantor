@@ -21,6 +21,9 @@ if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
 
   # Ignore C4996 warning
   target_compile_options(${PROJECT_NAME} PUBLIC /wd4996)
+
+  # Set O2 optimization for release
+  set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 endif()
 
 # Clang|GNU not windows
@@ -39,6 +42,9 @@ if(CMAKE_CXX_COMPILER_ID MATCHES Clang|GNU)
     endif()
 
   endif()
+
+  # Set O3 optimization for release
+  set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 endif()
 
 # MinGW

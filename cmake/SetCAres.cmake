@@ -1,7 +1,7 @@
 # set normal resolver
 macro(set_normal_resolver)
-  list(APPEND TRANTOR_SOURCES trantor/net/inner/NormalResolver.cc)
-  list(APPEND PRIVATE_HEADERS trantor/net/inner/NormalResolver.h)
+  list(APPEND TRANTOR_SOURCES trantor/net/resolver/NormalResolver.cc)
+  list(APPEND PRIVATE_HEADERS trantor/net/resolver/NormalResolver.h)
 endmacro()
 
 # set cares resolver
@@ -18,8 +18,8 @@ macro(set_cares_resolver)
     target_link_libraries(${PROJECT_NAME} PRIVATE Iphlpapi)
   endif()
 
-  list(APPEND TRANTOR_SOURCES trantor/net/inner/AresResolver.cc)
-  list(APPEND PRIVATE_HEADERS trantor/net/inner/AresResolver.h)
+  list(APPEND TRANTOR_SOURCES trantor/net/resolver/AresResolver.cc)
+  list(APPEND PRIVATE_HEADERS trantor/net/resolver/AresResolver.h)
 endmacro()
 
 # ######################################################################################################################

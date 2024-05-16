@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
-#include <trantor/net/InetAddress.h>
-
 #include <string>
+#include <trantor/net/InetAddress.h>
 
 using namespace trantor;
 

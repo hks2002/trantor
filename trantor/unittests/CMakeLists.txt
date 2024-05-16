@@ -30,6 +30,8 @@ endif()
 include(GoogleTest)
 
 foreach(T ${UNITTEST_TARGETS})
+  message(STATUS "Setting Testing ${T}")
+
   if(BUILD_DEPENDENCIES)
     target_include_directories(${T} PRIVATE ${gtest_SOURCE_DIR}/include)
   endif()

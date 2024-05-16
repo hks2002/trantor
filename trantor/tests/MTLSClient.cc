@@ -49,66 +49,56 @@
  *
  * **/
 
-#include <trantor/net/TcpClient.h>
-#include <trantor/utils/Logger.h>
-#include <trantor/net/EventLoopThread.h>
-#include <string>
-#include <iostream>
+#include "trantor/net/TcpClient.h"
+#include "trantor/net/core/EventLoopThread.h"
+#include "trantor/utils/Logger.h"
 #include <atomic>
+#include <iostream>
+#include <string>
 using namespace trantor;
 #define USE_IPV6 0
-int main()
-{
-    trantor::Logger::setLogLevel(trantor::Logger::kTrace);
-    LOG_DEBUG << "TcpClient class test!";
-    EventLoop loop;
+int main() {
+  trantor::Logger::setLogLevel(trantor::Logger::kTrace);
+  LOG_DEBUG << "TcpClient class test!";
+  EventLoop loop;
 #if USE_IPV6
-    InetAddress serverAddr("::1", 8888, true);
+  InetAddress serverAddr("::1", 8888, true);
 #else
-    InetAddress serverAddr("127.0.0.1", 8888);
+  InetAddress serverAddr("127.0.0.1", 8888);
 #endif
-    std::shared_ptr<trantor::TcpClient> client[10];
-    std::atomic_int connCount;
-    connCount = 1;
-    for (int i = 0; i < connCount; ++i)
-    {
-        client[i] = std::make_shared<trantor::TcpClient>(&loop,
-                                                         serverAddr,
-                                                         "tcpclienttest");
-        std::vector<std::pair<std::string, std::string>> sslcmd = {};
-        // That key is common for client and server
-        // The CA file must be the client CA, for this sample the CA is common
-        // for both
-        auto policy = TLSPolicy::defaultClientPolicy();
-        policy->setCertPath("./client-crt.pem")
-            .setKeyPath("./server-key.pem")
-            .setCaPath("./ca-crt.pem")
-            .setHostname("localhost");
-        client[i]->enableSSL(policy);
-        client[i]->setConnectionCallback(
-            [i, &loop, &connCount](const TcpConnectionPtr &conn) {
-                if (conn->connected())
-                {
-                    LOG_DEBUG << i << " connected!";
-                    char tmp[20];
-                    sprintf(tmp, "%d client!!", i);
-                    conn->send(tmp);
-                }
-                else
-                {
-                    LOG_DEBUG << i << " disconnected";
-                    --connCount;
-                    if (connCount == 0)
-                        loop.quit();
-                }
-            });
-        client[i]->setMessageCallback(
-            [](const TcpConnectionPtr &conn, MsgBuffer *buf) {
-                LOG_DEBUG << std::string(buf->peek(), buf->readableBytes());
-                buf->retrieveAll();
-                conn->shutdown();
-            });
-        client[i]->connect();
-    }
-    loop.loop();
+  std::shared_ptr<trantor::TcpClient> client[10];
+  std::atomic_int                     connCount;
+  connCount = 1;
+  for (int i = 0; i < connCount; ++i) {
+    client[i] = std::make_shared<trantor::TcpClient>(&loop, serverAddr, "tcpclienttest");
+    std::vector<std::pair<std::string, std::string>> sslcmd = {};
+    // That key is common for client and server
+    // The CA file must be the client CA, for this sample the CA is common
+    // for both
+    auto policy = TLSPolicy::defaultClientPolicy();
+    policy->setCertPath("./client-crt.pem")
+      .setKeyPath("./server-key.pem")
+      .setCaPath("./ca-crt.pem")
+      .setHostname("localhost");
+    client[i]->enableSSL(policy);
+    client[i]->setConnectionCallback([i, &loop, &connCount](const TcpConnectionPtr &conn) {
+      if (conn->connected()) {
+        LOG_DEBUG << i << " connected!";
+        char tmp[20];
+        sprintf(tmp, "%d client!!", i);
+        conn->send(tmp);
+      } else {
+        LOG_DEBUG << i << " disconnected";
+        --connCount;
+        if (connCount == 0) loop.quit();
+      }
+    });
+    client[i]->setMessageCallback([](const TcpConnectionPtr &conn, MsgBuffer *buf) {
+      LOG_DEBUG << std::string(buf->peek(), buf->readableBytes());
+      buf->retrieveAll();
+      conn->shutdown();
+    });
+    client[i]->connect();
+  }
+  loop.loop();
 }

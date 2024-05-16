@@ -1,12 +1,12 @@
 add_executable(logger_test LoggerTest.cc)
 add_executable(logger_macro_test LoggerMacroTest.cc)
 
-add_executable(async_file_logger_test AsyncFileLoggerTest.cc)
-add_executable(async_file_logger_test1 AsyncFileLoggerTest1.cc)
-
 add_executable(path_conversion_test PathConversionTest.cc)
 
 add_executable(dns_test DnsTest.cc)
+
+add_executable(async_file_logger_test AsyncFileLoggerTest.cc)
+add_executable(async_file_logger_test1 AsyncFileLoggerTest1.cc)
 
 add_executable(run_in_loop_test1 RunInLoopTest1.cc)
 add_executable(run_in_loop_test2 RunInLoopTest2.cc)
@@ -15,39 +15,38 @@ add_executable(run_on_quit_test RunOnQuitTest.cc)
 add_executable(timer_test TimerTest.cc)
 add_executable(timer_test1 TimerTest1.cc)
 add_executable(timing_wheel_test TimingWheelTest.cc)
-add_executable(kickoff_test KickoffTest.cc)
-
-add_executable(tcp_server_test TcpServerTest.cc)
-add_executable(tcp_client_test TcpClientTest.cc)
-add_executable(tcp_asyncstream_server_test TcpAsyncStreamServerTest.cc)
 
 add_executable(serial_task_queue_test1 SerialTaskQueueTest1.cc)
 add_executable(serial_task_queue_test2 SerialTaskQueueTest2.cc)
 add_executable(concurrent_task_queue_test ConcurrentTaskQueueTest.cc)
 
+add_executable(tcp_client_test TcpClientTest.cc)
+add_executable(tcp_server_test TcpServerTest.cc)
+add_executable(kickoff_test KickoffTest.cc)
+add_executable(tcp_asyncstream_server_test TcpAsyncStreamServerTest.cc)
 add_executable(sendfile_test SendfileTest.cc)
 add_executable(sendstream_test SendstreamTest.cc)
 
 set(targets_list
     logger_test
     logger_macro_test
-    async_file_logger_test
-    async_file_logger_test1
     path_conversion_test
     dns_test
+    async_file_logger_test
+    async_file_logger_test1
     run_in_loop_test1
     run_in_loop_test2
     run_on_quit_test
     timer_test
     timer_test1
     timing_wheel_test
-    kickoff_test
-    tcp_server_test
-    tcp_client_test
-    tcp_asyncstream_server_test
     serial_task_queue_test1
     serial_task_queue_test2
     concurrent_task_queue_test
+    tcp_server_test
+    tcp_client_test
+    kickoff_test
+    tcp_asyncstream_server_test
     sendfile_test
     sendstream_test
 )
@@ -76,8 +75,31 @@ set_property(TARGET ${targets_list} PROPERTY CXX_STANDARD 17)
 set_property(TARGET ${targets_list} PROPERTY CXX_STANDARD_REQUIRED ON)
 set_property(TARGET ${targets_list} PROPERTY CXX_EXTENSIONS OFF)
 
+# TODO: fix these tests
+set(skip_list
+    tcp_server_test
+    tcp_client_test
+    kickoff_test
+    tcp_asyncstream_server_test
+    sendfile_test
+    sendstream_test
+    ssl_server_test
+    ssl_client_test
+    delayed_ssl_server_test
+    delayed_ssl_client_test
+)
+
 foreach(T ${targets_list})
+  message(STATUS "Setting Testing ${T}")
+
   target_link_libraries(${T} PRIVATE trantor)
   set_standard_build_output(${T})
 
+  if(NOT
+     "${T}"
+     IN_LIST
+     skip_list
+  )
+    add_test(NAME ${T} COMMAND ${T})
+  endif()
 endforeach()

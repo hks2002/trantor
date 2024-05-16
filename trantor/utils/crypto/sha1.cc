@@ -17,14 +17,17 @@ A million repetitions of "a"
 /* #define LITTLE_ENDIAN * This should be #define'd already, if true. */
 /* #define SHA1HANDSOFF * Copies data before messing with it. */
 
-#define SHA1HANDSOFF
+#include "sha1.h"
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdint>
+#include <memory>
+
 #if defined(__sun)
 #include "solarisfixes.h"
 #endif
-#include "sha1.h"
+
+#define SHA1HANDSOFF
+
 
 #ifndef BYTE_ORDER
 #if (BSD >= 199103)

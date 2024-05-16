@@ -8,8 +8,16 @@ endmacro()
 
 macro(get_download_url org_name lib_name)
   if(${lib_name}_VER)
-    set(${lib_name}_DOWNLOAD_URL "https://github.com/${org_name}/${lib_name}/archive/refs/tags/${lib_name_VER}.zip")
+    set(${lib_name}_DOWNLOAD_URL
+        "https://github.com/${org_name}/${lib_name}/archive/refs/tags/${lib_name_VER}.zip"
+        CACHE STRING "Download URL"
+    )
   else()
+    find_program(CURL_EXECUTABLE curl)
+    if(CURL_EXECUTABLE-NOTfOUND)
+      message(FATAL_ERROR "CURL not found")
+    endif()
+
     execute_process(
       COMMAND curl -sL https://api.github.com/repos/${org_name}/${lib_name}/releases/latest OUTPUT_VARIABLE latest_json
     )
@@ -20,8 +28,8 @@ macro(get_download_url org_name lib_name)
             "${latest_json}"
     )
 
-    if(${latest_tag} STREQUAL "")
-      message(FATAL_ERROR "REGEX Got empty tag")
+    if("${latest_tag}" STREQUAL "")
+      message(FATAL_ERROR "${org_name}/${lib_name}: REGEX Got empty tag")
     else()
       message(STATUS "Latest tag: ${latest_tag}")
       message(STATUS "Passing ${lib_name}_VER to change version")
@@ -34,7 +42,10 @@ macro(get_download_url org_name lib_name)
                 latest_tag_val
     )
 
-    set(${lib_name}_DOWNLOAD_URL "https://github.com/${org_name}/${lib_name}/archive/refs/tags/${latest_tag_val}.zip")
+    set(${lib_name}_DOWNLOAD_URL
+        "https://github.com/${org_name}/${lib_name}/archive/refs/tags/${latest_tag_val}.zip"
+        CACHE STRING "Download URL"
+    )
   endif()
 endmacro()
 
@@ -79,7 +90,9 @@ if(BUILD_DEPENDENCIES)
     # googletest_SOURCE_DIR: build/_deps/googletest-src
     # gtest_SOURCE_DIR: build/_deps/googletest-src/googletest
     #]]
-    get_download_url("google" "googletest")
+    if(NOT googletest_DOWNLOAD_URL)
+      get_download_url("google" "googletest")
+    endif()
     FetchContent_Declare(googletest URL ${googletest_DOWNLOAD_URL})
     # For Windows: Prevent overriding the parent project's compiler/linker ⚠️MT/MD⚠️ settings
     set(gtest_force_shared_crt
@@ -97,20 +110,21 @@ if(BUILD_DEPENDENCIES)
 
   # spdlog
   if(TRANTOR_USE_SPDLOG)
-    get_download_url("gabime" "spdlog")
-    get_download_url("fmtlib" "fmt")
+    if(NOT spdlog_DOWNLOAD_URL)
+      get_download_url("gabime" "spdlog")
+    endif()
     FetchContent_Declare(spdlog URL ${spdlog_DOWNLOAD_URL})
-    FetchContent_Declare(fmt URL ${fmt_DOWNLOAD_URL})
-    FetchContent_MakeAvailable(fmt spdlog)
+    FetchContent_MakeAvailable(spdlog)
 
     # Set build output path, this is mainly for Windows, to solve the test/unittests running 0x000135 problems
-    set_standard_build_output(fmt)
     set_standard_build_output(spdlog)
   endif()
 
   # c-ares
   if(TRANTOR_USE_C-ARES)
-    get_download_url("c-ares" "c-ares")
+    if(NOT c-ares_DOWNLOAD_URL)
+      get_download_url("c-ares" "c-ares")
+    endif()
     FetchContent_Declare(c-ares URL ${c-ares_DOWNLOAD_URL})
     FetchContent_MakeAvailable(c-ares)
 
@@ -123,7 +137,9 @@ if(BUILD_DEPENDENCIES)
     # openssl build need perl
     find_package(Perl REQUIRED)
 
-    get_download_url("openssl" "openssl")
+    if(NOT openssl_DOWNLOAD_URL)
+      get_download_url("openssl" "openssl")
+    endif()
     FetchContent_Declare(openssl URL ${openssl_DOWNLOAD_URL})
     FetchContent_MakeAvailable(OpenSSL)
 
@@ -149,6 +165,7 @@ if(BUILD_DEPENDENCIES)
         )
         execute_process(COMMAND make -j WORKING_DIRECTORY ${openssl_BINARY_DIR})
         execute_process(COMMAND make install WORKING_DIRECTORY ${openssl_BINARY_DIR})
+        set(OPENSSL_VERSION_MAJOR 3)
       endif() # compiler id
     endif()
 
@@ -167,7 +184,9 @@ if(BUILD_DEPENDENCIES)
     # botan build need python
     find_package(PythonInterp REQUIRED)
 
-    get_download_url("randombit" "botan")
+    if(NOT botan_DOWNLOAD_URL)
+      get_download_url("randombit" "botan")
+    endif()
     FetchContent_Declare(botan URL ${botan_DOWNLOAD_URL})
     FetchContent_MakeAvailable(Botan)
 

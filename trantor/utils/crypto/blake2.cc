@@ -1,8 +1,9 @@
 // Taken from https://github.com/Sachin-A/Blake2
-#include <math.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
+#include "blake2.h"
+
+#include <cstdint>
+#include <cstring>
+#include <memory>
 
 /**
  * The BLAKE2b initialization vectors
