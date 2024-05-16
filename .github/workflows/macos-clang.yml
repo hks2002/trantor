@@ -33,7 +33,7 @@ jobs:
         shell: bash
         working-directory: ${{env.GITHUB_WORKSPACE}}
         run: |
-          sh deps.macos-12.sh
+          sh deps.macos-12+.sh
 
       - name: Configure Cmake [ BUILD_DEPENDENCIES OFF | SPDLOG OFF | C-ARES OFF ]
         run: |

@@ -30,7 +30,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sh ./deps.ubuntu-20.04.sh
+          sh ./deps.ubuntu-20.04+.sh
 
       - name: Configure Cmake [ BUILD_DEPENDENCIES OFF | SPDLOG OFF | C-ARES OFF ]
         run: |

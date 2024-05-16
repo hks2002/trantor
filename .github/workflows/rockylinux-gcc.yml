@@ -37,7 +37,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sh ./deps.rockylinux-9.sh
+          sh ./deps.rockylinux-9+.sh
 
       - name: Configure Cmake [ BUILD_DEPENDENCIES OFF | SPDLOG OFF | C-ARES OFF ]
         run: |
