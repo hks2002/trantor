@@ -13,6 +13,14 @@
 
 #include "StringFunctions.h"
 
+#include "Hash.h"
+#include "trantor/exports.h"
+#include <cassert>
+#include <chrono>
+#include <random>
+#include <string>
+#include <string_view>
+
 #ifdef _WIN32
 // clang-format off
 // windows.h must be included before ntsecapi.h
@@ -29,15 +37,6 @@
 #elif defined(__x86_64__) || defined(__i386__)
 #include <x86intrin.h>
 #endif
-
-#include <cassert>
-#include <chrono>
-#include <random>
-#include <string>
-#include <string_view>
-
-#include "Hash.h"
-#include "trantor/exports.h"
 
 namespace trantor {
 namespace utils {

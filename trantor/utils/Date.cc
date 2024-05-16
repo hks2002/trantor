@@ -14,6 +14,8 @@
 
 #include "Date.h"
 
+#include "StringFunctions.h"
+
 #ifndef _WIN32
 #include <sys/time.h>
 #else
@@ -25,8 +27,6 @@
 #include <iostream>
 #include <string>
 #include <string_view>
-
-#include "StringFunctions.h"
 
 namespace trantor {
 /**

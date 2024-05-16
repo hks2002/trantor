@@ -14,10 +14,9 @@
 
 #pragma once
 
+#include "trantor/exports.h"
 #include <cstdint>
 #include <string>
-
-#include "trantor/exports.h"
 
 namespace trantor {
 /**

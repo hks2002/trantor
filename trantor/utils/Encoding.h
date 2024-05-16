@@ -14,11 +14,10 @@
 
 #pragma once
 
+#include "trantor/exports.h"
 #include <cstdint>
 #include <string>
 #include <vector>
-
-#include "trantor/exports.h"
 
 namespace trantor {
 /**

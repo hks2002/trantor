@@ -15,9 +15,8 @@
 #include "Encoding.h"
 
 #ifdef _WIN32
-#include <windows.h>
-
 #include <algorithm>
+#include <windows.h>
 #else  // _WIN32
 #include <string.h>
 #include <unistd.h>

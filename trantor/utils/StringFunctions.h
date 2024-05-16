@@ -13,14 +13,13 @@
 
 #pragma once
 
+#include "trantor/exports.h"
 #include <string>
 #include <string_view>
 #include <vector>
 
-#include "trantor/exports.h"
-
 namespace trantor {
-/*/**
+/**
  * @brief provide same string functions.
  *
  */
