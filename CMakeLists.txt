@@ -4,19 +4,19 @@ project(trantor)
 add_library(${PROJECT_NAME})
 
 # C++ standard
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 14)
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
 
 # Build options
 option(BUILD_SHARED_LIBS "Build Trantor as a shared lib" OFF)
-option(BUILD_TESTING "Build tests" OFF)
+option(BUILD_TESTING "Build tests" ON)
 option(BUILD_DOC "Build Doxygen documentation" OFF)
-option(BUILD_DEPENDENCIES "Fetch and build dependencies" OFF)
-option(TRANTOR_USE_SPDLOG "Allow using the spdlog logging library" ON)
-option(TRANTOR_USE_C-ARES "Allow using C-ARES" ON)
+option(BUILD_DEPENDENCIES "Fetch and build dependencies" ON)
+option(TRANTOR_USE_SPDLOG "Allow using the spdlog logging library" OFF)
+option(TRANTOR_USE_C-ARES "Allow using C-ARES" OFF)
 set(TRANTOR_TLS_PROVIDER
-    "auto"
+    "none"
     CACHE STRING "TLS(Transport Layer Security) provider for trantor. Valid options are
  'none', 'openssl', 'botan-3', 'auto'."
 )
@@ -40,10 +40,10 @@ endif()
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules/)
 
 # Common settings
-include(cmake/SetBuildOutput.cmake)
 include(cmake/SetSystemAndCompiler.cmake)
 include(cmake/SetThreads.cmake)
 include(cmake/TestAtomic.cmake)
+include(cmake/SetBuildOutput.cmake)
 
 # Sources and headers
 set(TRANTOR_SOURCES

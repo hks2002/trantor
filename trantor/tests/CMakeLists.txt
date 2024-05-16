@@ -72,7 +72,7 @@ if(TRANTOR_USE_TLS)
   )
 endif()
 
-set_property(TARGET ${targets_list} PROPERTY CXX_STANDARD 14)
+set_property(TARGET ${targets_list} PROPERTY CXX_STANDARD 17)
 set_property(TARGET ${targets_list} PROPERTY CXX_STANDARD_REQUIRED ON)
 set_property(TARGET ${targets_list} PROPERTY CXX_EXTENSIONS OFF)
 
