@@ -60,7 +60,7 @@ jobs:
       - name: Test
         working-directory: ./build
         run: |
-          ctest
+          ctest --config ${{matrix.build-type}}
 
       - name: Configure Cmake [ cmake-fetch-content | SPDLOG ON | C-ARES ON ]
         # passing "-DFETCHCONTENT_BASE_DIR=D:/a/trantor/_deps" to keep cache when delete "build" folder
@@ -85,4 +85,4 @@ jobs:
       - name: Test
         working-directory: ./build
         run: |
-          ctest
+          ctest --config ${{matrix.build-type}}
