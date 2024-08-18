@@ -39,37 +39,6 @@ if(NOT Botan_FOUND)
     FetchContent_Declare(Botan URL ${botan_DOWNLOAD_URL})
     FetchContent_MakeAvailable(Botan)
 
-    # Set BOTAN_ROOT_DIR, to let find_package could search from the build directory
-    set(BOTAN_ROOT_DIR
-        ${CMAKE_INSTALL_PREFIX}/../Botan
-        CACHE PATH "Let find_package use the directory to find" FORCE
-    )
-
-    if(NOT EXISTS ${BOTAN_ROOT_DIR}/include/botan-3/botan)
-      if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
-        execute_process(
-          COMMAND ${PYTHON_EXECUTABLE} ${botan_SOURCE_DIR}/configure.py --prefix=${BOTAN_ROOT_DIR} --cc=msvc --build-tool=ninja --with-pkg-config --build-target=shared
-          WORKING_DIRECTORY ${botan_BINARY_DIR}
-        )
-        execute_process(COMMAND ninja -j WORKING_DIRECTORY ${botan_BINARY_DIR})
-        execute_process(COMMAND ninja install WORKING_DIRECTORY ${botan_BINARY_DIR})
-      else()
-        execute_process(
-          COMMAND ${PYTHON_EXECUTABLE} ${botan_SOURCE_DIR}/configure.py --prefix=${BOTAN_ROOT_DIR} --with-pkg-config --build-target=shared WORKING_DIRECTORY ${botan_BINARY_DIR}
-        )
-        execute_process(COMMAND make -j WORKING_DIRECTORY ${botan_BINARY_DIR})
-        execute_process(COMMAND make install WORKING_DIRECTORY ${botan_BINARY_DIR})
-      endif()
-    endif()
-
-    # find_again
-    find_package(Botan 3)
-    if(Botan_FOUND)
-      set_botan3()
-    else()
-      message(FATAL_ERROR "⛔Not found Botan after build")
-    endif()
-
   else()
     message(FATAL_ERROR "⛔Botan not found, please install it or set BUILD_MISSING_DEPENDENCIES to ON")
   endif()
