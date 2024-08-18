@@ -1,4 +1,4 @@
-name: Build ubuntu-gcc
+name: Build ubuntu-gcc-opt-on
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
         # Customize the CMake build type here (Release, Debug, RelWithDebInfo, MinSizeRel, etc.)
         build-type: ["Debug", "Release"]
         # Support (none, openssl, botan-3, auto)
-        tls-provider: ["none", "openssl"]
+        tls-provider: ["openssl", "botan-3"]
 
     steps:
       - name: Checkout Trantor source code
@@ -30,30 +30,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sh ./deps.ubuntu-20.04+.sh
+          sudo apt update
+          sudo apt install curl libgtest-dev libspdlog-dev libc-ares-dev openssl libssl-dev -y
 
-      - name: Configure Cmake [ BUILD_MISSING_DEPENDENCIES OFF | SPDLOG OFF | C-ARES OFF ]
-        run: |
-          cmake -B build -S . \
-          -DCMAKE_BUILD_TYPE=${{matrix.build-type}} \
-          -DBUILD_SHARED_LIBS=$shared \
-          -DBUILD_MISSING_DEPENDENCIES=OFF \
-          -DTRANTOR_USE_SPDLOG=OFF \
-          -DTRANTOR_USE_C-ARES=OFF \
-          -DTRANTOR_TLS_PROVIDER=${{matrix.tls-provider}} \
-          -DBUILD_TESTING=ON
-
-      - name: Build
-        working-directory: ./build
-        run: |
-          make -j
-
-      - name: Test
-        working-directory: ./build
-        run: |
-          make test
-
-      - name: Configure Cmake [ BUILD_MISSING_DEPENDENCIES OFF | SPDLOG ON | C-ARES ON ]
+      - name: Configure Cmake
         run: |
           cmake -B build -S . \
           -DCMAKE_BUILD_TYPE=${{matrix.build-type}} \

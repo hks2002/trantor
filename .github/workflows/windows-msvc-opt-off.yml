@@ -1,4 +1,4 @@
-name: Build windows-conan
+name: Build windows-msvc-opt-off
 
 on:
   push:
@@ -7,9 +7,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  ###############################################################################################################
-  conan-build:
-    name: "${{matrix.link}}-${{matrix.build-type}}-TLS:${{matrix.tls-provider}}-conan"
+  no-deps-build:
+    name: "${{matrix.link}}-${{matrix.build-type}}-opt-off"
     runs-on: windows-latest
     env:
       shared: ${{matrix.link == 'SHARED' && 'ON' || 'OFF'}}
@@ -19,8 +18,6 @@ jobs:
         link: ["STATIC", "SHARED"]
         # Customize the CMake build type here (Release, Debug, RelWithDebInfo, MinSizeRel, etc.)
         build-type: ["Debug", "Release"]
-        # Support (none, openssl, botan-3, auto)
-        tls-provider: ["openssl", "botan-3"]
 
     steps:
       - name: Checkout Trantor source code
@@ -28,30 +25,15 @@ jobs:
         with:
           submodules: false
 
-      - uses: actions/cache@v4
-        id: conan-cache
-        with:
-          path: |
-            ~\AppData\Local\pip\Cache
-            ~\.conan2
-          key: ${{ runner.os }}-conan-${{ hashFiles('conanfile.txt') }}
-
-      - name: Install conan packages
-        if: steps.conan-cache.outputs.cache-hit != 'true'
-        run: |
-          cmake -P ./cmake/SetConan.cmake TRANTOR_USE_SPDLOG TRANTOR_USE_C-ARES TRANTOR_TLS_OPENSSL TRANTOR_TLS_BOTAN
-
       - name: Configure Cmake
         run: |
           cmake -B build -S . `
-          -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" `
           -DBUILD_SHARED_LIBS=$shared `
+          -DCMAKE_BUILD_TYPE=${{matrix.build-type}} `
           -DBUILD_MISSING_DEPENDENCIES=OFF `
-          -DTRANTOR_USE_SPDLOG=ON `
-          -DTRANTOR_USE_C-ARES=ON `
-          -DTRANTOR_TLS_PROVIDER=${{matrix.tls-provider}} `
+          -DTRANTOR_USE_SPDLOG=OFF `
+          -DTRANTOR_USE_C-ARES=OFF `
           -DBUILD_TESTING=ON `
-          -DCMAKE_POLICY_DEFAULT_CMP0091=NEW `
           -G "Visual Studio 17 2022" -T host=x64 -A x64
 
       - name: Build

@@ -1,0 +1,55 @@
+name: Build rockylinux-gcc-opt-off
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: "${{matrix.link}}-${{matrix.build-type}}-opt-off"
+    runs-on: ubuntu-latest
+    env:
+      shared: ${{matrix.link == 'SHARED' && 'ON' || 'OFF'}}
+    container:
+      image: rockylinux:9.3
+      options: --user root
+    strategy:
+      fail-fast: false
+      matrix:
+        link: ["STATIC", "SHARED"]
+        # Customize the CMake build type here (Release, Debug, RelWithDebInfo, MinSizeRel, etc.)
+        build-type: ["Debug", "Release"]
+
+    steps:
+      - name: Install build dependencies
+        run: |
+          dnf install git cmake gcc gcc-c++ gtest-devel -y
+
+      - name: Checkout Trantor source code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Configure Cmake
+        run: |
+          cmake -B build -S . \
+          -DCMAKE_BUILD_TYPE=${{matrix.build-type}} \
+          -DBUILD_SHARED_LIBS=$shared \
+          -DBUILD_MISSING_DEPENDENCIES=OFF \
+          -DTRANTOR_USE_SPDLOG=OFF \
+          -DTRANTOR_USE_C-ARES=OFF \
+          -DTRANTOR_TLS_PROVIDER=${{matrix.tls-provider}} \
+          -DBUILD_TESTING=ON
+
+      - name: Build
+        working-directory: ./build
+        run: |
+          make -j
+
+      - name: Test
+        working-directory: ./build
+        run: |
+          make test
